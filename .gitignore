@@ -1,0 +1,20 @@
+# Secrets — never commit these
+.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+env/
+
+# VS Code
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# NOTE: faiss_index/ is intentionally NOT ignored
+# It must be committed so Railway can serve it without running ingest.py
