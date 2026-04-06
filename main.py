@@ -45,10 +45,11 @@ app = FastAPI(
 # In production you can tighten this to your specific Lovable domain.
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],          # Lovable app URL — tighten after launch
-    allow_credentials=True,
-    allow_methods=["*"],
+    allow_origins=["*"],
+    allow_credentials=False,
+    allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["*"],
+    expose_headers=["*"],
 )
 
 
