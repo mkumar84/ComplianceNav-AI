@@ -29,23 +29,31 @@ CHUNK_OVERLAP    = 50
 
 
 def load_documents():
-    path  = Path(DOCUMENTS_DIR)
-    files = list(path.glob("**/*.pdf")) + list(path.glob("**/*.txt"))
+    path = Path(DOCUMENTS_DIR)
+    files = (
+        list(path.glob("**/*.pdf")) +
+        list(path.glob("**/*.txt")) +
+        list(path.glob("**/*.html"))
+    )
     files = [f for f in files if f.name != "README_documents.md"]
 
     if not files:
-        raise ValueError(f"No PDF or TXT files in '{DOCUMENTS_DIR}'. Add documents first.")
+        raise ValueError(f"No PDF, TXT, or HTML files in '{DOCUMENTS_DIR}'. Add documents first.")
 
     raw_docs = []
     for fp in files:
         print(f"  Loading: {fp.name}")
         try:
-            loader = PyPDFLoader(str(fp)) if fp.suffix == ".pdf" else TextLoader(str(fp), encoding="utf-8")
+            if fp.suffix.lower() == ".pdf":
+                loader = PyPDFLoader(str(fp))
+            else:
+                loader = TextLoader(str(fp), encoding="utf-8", autodetect_encoding=True)
+
             for page in loader.load():
                 raw_docs.append({
-                    "text":   page.page_content,
+                    "text": page.page_content,
                     "source": fp.stem,
-                    "page":   page.metadata.get("page", "N/A"),
+                    "page": page.metadata.get("page", "N/A"),
                 })
         except Exception as e:
             print(f"  ⚠️  Could not load {fp.name}: {e}")
